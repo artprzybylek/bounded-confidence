@@ -6,7 +6,7 @@ import numpy as np
 from BC import bounded_confidence, select_all
 
 
-RESULTS_PATH = "C:/studia/python/praca_magisterska/results/"
+RESULTS_PATH = "results/"
 
 
 def _latest_opinions(opinions_in_time):
@@ -95,7 +95,7 @@ def simulate_changing_eps(network, e=np.arange(0.01, 0.41, 0.01), num_of_simulat
     print(t1-t0)
 
 
-def simulate_changing_m(network, eps, m_values=np.arange(0, 1, 0.04), num_of_simulations=50):
+def simulate_changing_m(network, eps, m_values=np.arange(0, 1.01, 0.04), num_of_simulations=50):
     eps_left = eps / 2
     eps_right = eps_left
     number_of_agents = nx.number_of_nodes(network)
@@ -109,9 +109,9 @@ def simulate_changing_m(network, eps, m_values=np.arange(0, 1, 0.04), num_of_sim
                   all_final_groups, all_simulation_steps, index, opinion_dependent=True, m=m)
     avg_frequencies = _avg_freq(all_occurrences, number_of_agents, num_of_simulations)
 
-    avg_freq_name = 'op_dep_' + str(network) + '_avg_freq_' + '.pkl'
-    final_groups_name = 'op_dep_' + str(network) + '_final_groups_' + '.pkl'
-    steps_name = 'op_dep_' + str(network) + '_steps_' + '.pkl'
+    avg_freq_name = 'op_dep_' + str(eps) + '_' + str(network) + '_avg_freq' + '.pkl'
+    final_groups_name = 'op_dep_' + str(eps) + '_' + str(network) + '_final_groups' + '.pkl'
+    steps_name = 'op_dep_' + str(eps) + '_' + str(network) + '_steps' + '.pkl'
     files_and_results = {avg_freq_name: avg_frequencies,
                          final_groups_name: all_final_groups,
                          steps_name: all_simulation_steps}
