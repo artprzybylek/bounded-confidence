@@ -6,6 +6,9 @@ import numpy as np
 from BC import bounded_confidence, select_all
 
 
+RESULTS_PATH = "C:/studia/python/praca_magisterska/results/"
+
+
 def _latest_opinions(opinions_in_time):
     return [opinion_profile[-1] for opinion_profile in opinions_in_time.values()]
 
@@ -42,7 +45,7 @@ def _avg_freq(all_occurrences, number_of_agents, num_of_simulations):
 
 def _save_all_results(files_and_results):
     for file_name in files_and_results:
-        with open(file_name, "bw") as fh:
+        with open(RESULTS_PATH+file_name, "bw") as fh:
             res = files_and_results[file_name]
             pickle.dump(res, fh)
 
