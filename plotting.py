@@ -19,6 +19,9 @@ def plot_avg_freq(file):
     ax = fig.add_subplot(111, projection='3d')
     ax.plot_surface(X, Y, Z, vmin=0, vmax=Z_max, cmap=cm.gist_rainbow, rstride=1, cstride=1,
                     linewidth=.2, edgecolor='k')
+    ax.set_xlabel('opinion')
+    ax.set_ylabel('confidence level')
+    ax.set_zlabel('opinion frequency')
 
 
 plot_avg_freq("barabasi_albert_graph(625,4)_avg_freq_1.pkl")
