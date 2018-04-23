@@ -1,11 +1,26 @@
 import pickle
+import re
 import numpy as np
+import matplotlib as mp
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def plot_avg_freq(file):
+mp.rcParams['font.size'] = 13
+mp.rcParams['axes.linewidth'] = .1
+mp.rcParams['lines.linewidth'] = .1
+mp.rcParams['patch.linewidth'] = .1
+
+
+titles = {
+    'results/avg_freq_{}.pkl'.format('cg_200'): 'Network: complete graph, n=200',
+    'results/avg_freq_{}.pkl'.format('ba_200_6'): 'Network: Barabasi-Albert, n=200, m=6',
+    'results/avg_freq_{}.pkl'.format('ws_200_20_0.3'): 'Network: Watts-Strogatz, n=200, k=20, p=0.3'
+    }
+
+
+def plot_avg_freq(file, output_file):
     with open(file, "rb") as f:
         avg_freq = pickle.load(f)
     y = np.linspace(0.01, 0.4, len(avg_freq))
@@ -22,7 +37,23 @@ def plot_avg_freq(file):
     ax.set_xlabel('opinion')
     ax.set_ylabel('confidence level')
     ax.set_zlabel('opinion frequency')
+    plt.title(titles[file])
+    fig.tight_layout()
+    plt.savefig(output_file, dpi=fig.dpi)
 
 
-plot_avg_freq("barabasi_albert_graph(625,4)_avg_freq_1.pkl")
+
+files = ['results/avg_freq_{}.pkl'.format(x) for x in [
+    'ba_200_6', 'cg_200', 'ws_200_20_0.3'
+    ]]
+in_out = {
+    'results/avg_freq_{}.pkl'.format(x): re.sub('\.', ',', 'plots/avg_freq_{}'.format(x))+'.pdf'
+    for x in [
+        'ba_200_6', 'cg_200', 'ws_200_20_0.3'
+        ]
+    }
+
+
+for f in in_out:
+    plot_avg_freq(f, in_out[f])
 plt.show()
