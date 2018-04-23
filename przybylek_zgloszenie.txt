@@ -1,0 +1,33 @@
+﻿Temat:
+
+Impact of network topology on opinion dynamics in a bounded confidence model
+
+
+
+Cel:
+
+Zbadanie wpływu topologii sieci kontaktów społecznych na przebieg procesu rozprzestrzeniania się opinii w ramach modelu ograniczonego zaufania. 
+Symulacje Monte Carlo na różnych sieciach modelowych i rzeczywistych, przy różnych poziomach zaufania.
+
+
+
+Harmonogram:
+
+1. Przegląd literatury dotyczącej modelowania układów społecznych, w szczególności modelu ograniczonego zaufania. 
+2. Przegląd literatury dotyczącej sieci złożonych. 
+3. Implementacja modelu ograniczonego zaufania. 
+4. Symulacje modelu na różnych sieci społecznych. 
+5. Analiza wyników.
+
+
+
+Literatura:
+
+1. Hegselmann, R. & Krause, U. (2002). Opinion dynamics and bounded confidence: models, analysis and simulation. Journal of Artificial Societies and Social Simulation, 5(3) 2: http://jasss.soc.surrey.ac.uk/5/3/2.html.
+
+2. Claudio Castellano, Santo Fortunato, and Vittorio Loreto, Statistical physics of social dynamics, Rev. Mod. Phys. 81, 591 (2009)
+
+3. A. Jędrzejewski, K. Sznajd-Weron, J. Szwabiński, Mapping ,the q-voter model: From a single chain to complex networks, Physica A 446 (2016) 110-119
+
+
+
