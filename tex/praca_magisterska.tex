@@ -190,6 +190,7 @@ Next, we will check what influence on reaching consensus does manipulating param
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/freq_consensus_ws_200_p=0,3.pdf}
 		\caption{Frequency of reaching consensus for Watts--Strogatz network with $n=200, p=0.3$}
+		\label{freq_ws}
 \end{figure}
 
 We can see that the bigger parameter $k$ is, the less often we are reaching consensus. It means that for Watts-Strogatz network if average number of agent connections is small, it is more likely that consensus will establish, than if network is well--connected. For instance, we obtained consensus in 80\% of simulations for confidence level $\epsilon=0.2$ when $k=10$ and not even in 30\% of simulations for $k\geq20$.
@@ -205,6 +206,7 @@ To better understand what $k$ values are typical for reaching consensus, we also
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/eps_freq_consensus_ws_200_p=0,2.pdf}
 		\caption{Frequency of reaching consensus in terms of $k$ parameter of Watts--Strogatz network}
+		\label{freq_ws_eps}
 \end{figure}
 
 It turns out that consensus is most likely to be reached when $k=6$ and $k=8$, which are cases of low number of connections. For $k=4$ agents are too weekly--connected and they can not influence each other so much, thus they agree on consensus rarely. For $\epsilon$ up to $0.22$ increasing $k$ starting from $k=8$ causes decreasing of frequency of reaching consensus.
@@ -271,7 +273,7 @@ where $x_0^{(i)}$ is initial opinion of $i$-th agent and $x_{f}^{(i)}$ is his fi
 
 We will also study what is the dynamics of opinions changes depending on given network. In order to do this after each Monte Carlo step of Bounded Confidence model simulation, we calculate average value of opinion change, that is:
 \begin{equation}
-\Delta x_t = \sum_{i=1}^n \left|x_{t+1}^{(i)} - x_t^{(i)} \right|
+\Delta x_t = \sum_{i=1}^n \left|x_{t+1}^{(i)} - x_{t}^{(i)} \right|
 \end{equation}
 
 
@@ -281,10 +283,10 @@ We will also study what is the dynamics of opinions changes depending on given n
 \begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/changes_completegraph.pdf}
-		\caption{Average changes of opinions}
+		\caption{Average changes of opinions for complete graph}
 \end{figure}
 
-We can see that bigger the value of confidence level is, average agents opinions change is also bigger. We observe linear growth up to confidence level $\epsilon=0.17$, at this point value of average opinions change is around $0.13$. Further on, up to $\epsilon=0.2$ opinions change increases only slightly, to this point plots for different network sizes are similiar. We may claim that $\epsilon=0.2$ is a breakpoint, because from that point small increase of confidence level causes significant increase of opinions change (especially for $n=500$). We also notify that the steepest growth is for biggest networks ($n=500$) and the mildest growth is for smallest networks ($n=100$). Finally, opinions changes stabilize on value $0.25$, which is typical case of consensus.
+We can see that bigger the value of confidence level is, average agents opinions change is also bigger. We observe linear growth up to confidence level $\epsilon=0.17$, at this point value of average opinions change is around $0.13$. Further on, up to $\epsilon=0.2$ opinions change increases only slightly, to this point plots for different network sizes are similiar. We may claim that $\epsilon=0.2$ is a breakpoint, because from that point small increase of confidence level causes significant increase of opinions change (especially for $n=500$). We also notice that the steepest growth is for biggest networks ($n=500$) and the mildest growth is for smallest networks ($n=100$). Finally, opinions changes stabilize on value $0.25$, which is typical case of consensus.
 
 \indent
 
@@ -293,10 +295,63 @@ We already know how confidence level affects differences between initial agents 
 \begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_completegraph.pdf}
-		\caption{Average changes of opinions in time space}
+		\caption{Average changes of opinions in time space for complete graph network}
 \end{figure}
 
+We don't observe much changes in opinions dynamics between different network sizes. For each considered confidence levels, biggest opinions changes happen at first three Monte Carlo steps and then for following steps changes in network decrease. We also notice that for larger confidence levels opinions changes are at higher level at the beginning of the evolution process and then as time goes by they decrease steeper.
 
+\subsubsection{Watts--Strogatz}
+
+For Watts--Strogatz network we compare opinions changes depending on $k$ parameter. We consider networks with low number of connections ($k$ in range $4-12$), as well as well--connected networks ($k$ in range $10-50$).
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/pairs_changes_ws.pdf}
+		\caption{Average changes of opinions for Watts--Strogatz network with $n=200$, $p=0.2$}
+\end{figure}
+
+On both of the above plots there are single curves which differs the most from the rest, for the frist plot it is $k=4$ and for the second it is $k=10$. 
+\indent
+
+In the first case, $k=4$ means that agents have too less connections with neighbours to change their opinions significantly, small number of potential influential neighbours causes agents to stick with their own opinion if none of neighbours has similiar opinion. If we increase $k$ to $6$ then chances of findind someone influential grow for 50\% and that is why then agents change their opinions more. For $k=6-12$ we observe that more connections means larger opinions changes if $\epsilon < 15$. For $0.15 \leq \epsilon \leq 0.20$ obtained results are similiar and then for $\epsilon > 0.20$ we see again   bigger opinions changes for bigger $k$. It might look strange that for $k=6$ we have smaller average opinions change than for $k=8, 10, 12$ for $0.2 \leq \epsilon \leq 0.25$, whereas it was shown that for $k=6$ agents are more eager to agree on consensus on considered confidence levels (see Figure \ref{freq_ws_eps}). It happens so because even when most part of network decide to share the same opinion (at least 80\% of network), there are still some agents (especially for small $k$), who stick to their own opinions, which causes lowering of average opinions change.
+\indent
+
+On the second plot we see that opinions changes for $k=10$ are the smallest ones for $\epsilon \leq 0.08$ and the biggest ones for $0.11 \leq \epsilon \leq 0.23$. For small confidence level, e.g. $\epsilon=0.05$ and for $k=10$ probability that at least one neighbor of given agent will have similiar opinion is small and that is why agents do not change their opinions much, while for $k=20$ this probability is bigger and agents change their opinions more. For $\epsilon$ around point $0.2$ we obtain bigger opinions changes for $k=10$, it is the case when consensus is reached more often for that value of $k$ than for $k=20$ or bigger (see Figure \ref{freq_ws}). We can also notice that starting from $k=20$ we obtain similiar results in comparison to complete graph (linear growth up to $\epsilon=0.15$, steep growth from $\epsilon=0.20$ to $\epsilon=0.25$ and average opinion change around level $0.25$ for $\epsilon>0.25$.
+
+\indent
+
+Knowing how final opinions differ from initial, we can now analyse dynamics of opinions changes.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_Watts-Strogatz_n=200_p=0_2.pdf}
+		\caption{Average changes of opinions in time space for Watts--Strogatz network with $n=200$, $p=0.2$}
+\end{figure}
+
+For $k$ from $4$ to $12$ we see that opinions changes are the biggest at the beginning and then they slowly decrease for further time steps. Also it is common for all confidece levels that for $k=12$ agents change their opinions the most and for $k=4$ the least up to some moment in time. For $\epsilon=0.05$ not much happens, opinions changes are very small and network stabilises quickly. For $\epsilon=0.15$ and $k \geq 0.06$ we see that agents change their opinions very slowly. When agent decide to change his opinion a bit, it may happen that he will then start to be influenced by another agent for whom he had no confidence, the trend of changing opinions wanders to another agents and due to non--centralized topology of Watts--Strogatz network it takes a long time of slowly opinions changes to achieve stable state.
+\indent
+
+For $\epsilon=0.25$ we observe that the dynamics of opinions changing last the longest for $k=4$, for $\epsilon=0.35$ we obtain faster stabilizing due to higher confidence level.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_Watts-Strogatz_n=200_p=0_3.pdf}
+		\caption{Average changes of opinions in time space for Watts--Strogatz network with $n=200$, $p=0.2$}
+\end{figure}
+
+All plots for $k \geq 20$ look similiar to each other, again biggest changes in opinions dynamics can be observed at the beginning. At confidence level $\epsilon=0.05$ for $k \geq 20$ opinions does not stabilize so quickly as in case of $k=10$. When $\epsilon=0.15$ we see opposite situation, for $k=10$ opinions changes decrease very slowly. Interestingly for $\epsilon=0.25$ sometimes stabilization of opinions last long for $k \geq 20$, this behavior could be caused by slow transformation from polarization of opinions to consensus. For $\epsilon=0.35$ consensus can be reached quicker as we see that opinions stabilize after few steps.
+
+\subsubsection{Barabasi--Albert}
+
+Let's now look how final opinions differ from initial for Barabasi--Albert network.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/changes_Barabasi-Albert_n=200.pdf}
+		\caption{Average changes of opinions for Barabasi--Albert network with $n=200$}
+\end{figure}
+
+We can see that for $m=2$ opinions changes are smaller than for bigger values of $m$, which is caused by too small connections in network. For $m=4$ we observe smaller changes than for $m=6,8,10$ at confidence level up to $\epsilon=0.10$ but for $\epsilon$ around point $0.2$ agents in networks with $m=4$ change their opinions the most. For $m \geq 6$ curves have similiar shape and in fact it is similiar shape as for complete graph case.
 
 \subsection{Fragmentation of opinions}
 
