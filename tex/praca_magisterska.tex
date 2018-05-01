@@ -22,7 +22,7 @@
 \begin{titlepage}
 	\maketitle
 	\begin{abstract}
-	In this paper we will investigate impact of network topology on proccess of spreading opinions in Bounded Confidence model. We will conduct Monte Carlo simulations on various model and real networks and various variants of Bounded Confidence model.
+	In this paper we will investigate impact of network topology on proccess of spreading opinions in Bounded Confidence model. We will conduct Monte Carlo simulations on various model networks and study distribution of final opinions, dynamics of changes, fragmentation of opinions, time of relaxation and consensus establishing.
 	\end{abstract}
 \end{titlepage}
 
@@ -32,7 +32,7 @@
 \newpage
 
 \section{Introduction}
-% \section{Modelling opinions dynamics}
+%\section{Modelling opinions dynamics}
 \section{Bounded Confidence model}
 	
 \subsection{Symmetric confidence level}
@@ -188,8 +188,8 @@ Next, we will check what influence on reaching consensus does manipulating param
 
 \begin{figure}[H]
 		\centering
-		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/freq_consensus_ws_200_p=0,3.pdf}
-		\caption{Frequency of reaching consensus for Watts--Strogatz network with $n=200, p=0.3$}
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/freq_consensus_ws_200_p=0,2.pdf}
+		\caption{Frequency of reaching consensus for Watts--Strogatz network with $n=200, p=0.2$}
 		\label{freq_ws}
 \end{figure}
 
@@ -247,9 +247,10 @@ Next, we manipulate parameter $m$, setting $n=200$, simulate and plot results. W
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/freq_consensus_ba_200.pdf}
 		\caption{Frequency of reaching consensus for Barabasi--Albert network with $n=200$}
+		\label{freq_ba}
 \end{figure}
 
-We can observe that starting from $m=4$ and increasing it, we less often achieve consensus and the plot lines are closer to complete graph case. We may claim that the less connections the network has, the more eager it is to achieve consensus. This is not all the truth because for $m=2$ the network is weak--connected and consensus isn't established so often as there are not many links between agents. These results and results form Watts--Strogatz network case implies that networks for which agents don't have many connections are more eager to agree on consensus than well--connected networks. Of course, too weak--connected network does not establish consensus so often.
+We can observe that starting from $m=4$ and increasing it, we less often achieve consensus and the plot lines are closer to complete graph case. We may claim that the less connections the network has, the more eager it is to achieve consensus. This is not all the truth because for $m=2$ the consensus is not established so often as there are many agents with only two neighbours. These results and results from Watts--Strogatz network case implies that networks for which agents don't have many connections are more eager to agree on consensus than well--connected networks. Of course, too weak--connected network does not establish consensus so often.
 
 %\subsubsection{Comparison between networks}
 %We would like also to compare a few weak--connected networks with each other and with complete graph to pick what are main differences in frequency of reaching consensus between them.
@@ -262,7 +263,7 @@ We can observe that starting from $m=4$ and increasing it, we less often achieve
 
 
 
-\subsection{Opinions changes through simulation}
+\subsection{Dynamics of opinions changing}
 In this section we will study average changes of agents opinions through opinions evolution process. We will investigate what is average change of opinions depending on confidence level, we will take into account final agents opinions and their initial ones and calculate average opinion change by the following formula:
 \begin{equation}
 \Delta x = \sum_{i=1}^n \left|x_{f}^{(i)} - x_0^{(i)} \right|,
@@ -351,9 +352,100 @@ Let's now look how final opinions differ from initial for Barabasi--Albert netwo
 		\caption{Average changes of opinions for Barabasi--Albert network with $n=200$}
 \end{figure}
 
-We can see that for $m=2$ opinions changes are smaller than for bigger values of $m$, which is caused by too small connections in network. For $m=4$ we observe smaller changes than for $m=6,8,10$ at confidence level up to $\epsilon=0.10$ but for $\epsilon$ around point $0.2$ agents in networks with $m=4$ change their opinions the most. For $m \geq 6$ curves have similiar shape and in fact it is similiar shape as for complete graph case.
+We can see that for $m=2$ opinions changes are smaller than for bigger values of $m$, which is caused by too small connections in network. For $m=4$ we observe smaller changes than for $m=6,8,10$ at confidence level up to $\epsilon=0.10$ but for $\epsilon$ around point $0.2$ agents in networks with $m=4$ change their opinions the most. For $m \geq 6$ curves have similiar shape. Average opinions changes for considered Barabasi--Albert networks are lower than for complete graph when confidence level is small ($\epsilon \leq 0.05$) but higher when $0.10 \leq \epsilon \leq 0.20$.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_Barabasi-Albert_n=200.pdf}
+		\caption{Average changes of opinions in time space for Barabasi--Albert network with $n=200$}
+\end{figure}
+
+Similary to complete graph and Watts--Strogatz networks, for Barabasi--Albert networks opinions changes are the biggest at the beginning of opinions evolution process. The bigger is the value of $m$, the bigger are the changes in first few time steps. When $\epsilon=0.15$ we observe the longest opinion changing for $m=4$, whereas $\epsilon=0.15$ or $\epsilon=0.25$ leads to the longest opinion changing for $m=2$.
+
+\subsubsection{Various networks}
+
+In order to depict differences in dynamics of opinions changing between different network topologies, we compare some of obtained results on common figures.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/changes_various.pdf}
+		\caption{Average changes of opinions for various networks with $n=200$}
+\end{figure}
+
+We observe that agents in Watts--Strogatz network ($k=4,6$) change opinions less than agents in Barabasi--Albert network ($m=4,6$) for $\epsilon < 0.15$, then for $0.15 \leq \epsilon \leq 0.22$ Watts--Strogatz network with $k=6$ is the most opinion changing. Watts--Strogatz network with $k=4$ changes opinions the less in general due to too small number of connections. Surprisingly, agents in complete graph network change opinions less than in Watts--Strogatz network ($k=6$) and Barabasi--Albert network ($m=4,6$) when $0.14 \leq \epsilon \leq 0.24$. We can conlude that many connections in network do not imply bigger opinions changes.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_various.pdf}
+		\caption{Average changes of opinions in time space for various networks with $n=200$}
+\end{figure}
+
+Complete graph network has different dynamics of changing opinions than other networks. In complete graph network agents change opinions the most in first $2-4$ steps of simulation and then they steeply decrease their opinion changing in next steps ending process of opinions formation fast. In Barabasi--Albert network this process is more spreaded in time (excluding $\epsilon=0.05$ when not much happen for weak--connected networks). The most spreaded in time dynamics of opinions changes are for Watts--Strogatz networks due to non--centralized topology of them.
+
 
 \subsection{Fragmentation of opinions}
+
+In this section we will study the issue of how many clusters are formed at the end of the process of opinions evolution (network fragmentation). In order to do this, we calculate average number of clusters, meaning connected components of the network. We take into account only these network connections for which absolute value of difference between agents opinions is smaller than confidence level. In order to have number of only significant in size clusters, we do not count clusters which have size smaller than $10\%$ of the size of the biggest cluster.
+
+\subsubsection{Complete graph}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/groups10_completegraph.pdf}
+		\caption{Average number of clusters for complete graph network}
+\end{figure}
+
+We can observe that number of clusters in complete graph network decreases when confidence level increases. For different network sizes results are very similiar. We can distinguish few interesting cases:
+\begin{itemize}
+\item for small confidence level, e.g. $\epsilon = 0.05$, network typically partitions into few clusters having different opinions
+\item for confidence level $0.17 \leq \epsilon \leq 0.21$ network divides into two clusters (polarization of opinions)
+\item for confidence level from $\epsilon = 0.22$ to $\epsilon = 0.26$ average number of clusters changes from $2$ to $1$, which states for transition from polarization of opinions to consensus, additionally we see that this transition is more rapid for larger networks ($n=500$)
+\item for $\epsilon \geq 0.27$ average number of clusters stabilizes to be equal $1$ (consensus)
+\end{itemize} 
+
+\subsubsection{Watts--Strogatz}
+
+For Watts--Strogatz network we want to compare number of clusters depending on confidence level for various values of parameter $k$.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/pairs_groups10_ws.pdf}
+		\caption{Average number of clusters for Watts--Strogatz network with $n=200$, $p=0.2$}
+\end{figure}
+
+Looking on the plots with $k=4,6,8,10,12$ we see that bigger the value of $k$ is, we can obtain less than 10 clusters for smaller confidence levels. On the other hand, for confidence level $0.16 \leq \epsilon \leq 0.20$ average number of clusters is a little bit smaller for small values of $k$ ($k=6,8$), it is so due to more frequent reaching consensus (see Figure \ref{freq_ws_eps}). We also notice number of clusters for polarization of opinions (which is $2$) is typical already for $\epsilon=0.13$. No more than one main cluster remains when $\epsilon \geq 0.23$.
+\indent
+
+Comparing the case of $k=10$ to cases $k=20,30,40,50$ we notice that for small confidence level up to $\epsilon=0.07$ average number of clusters is bigger when $k=10$. On the other hand, for $\epsilon \geq 0.10$ average number of clusters is the smallest when $k=10$. Results for $k=20$ and bigger values of $k$ are similiar to each other and to complete graph case.
+
+\subsubsection{Barabasi--Albert}
+
+For Barabasi--Albert network we will compare number of formed clusters for various values of parameter $m$.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/groups10_Barabasi-Albert_n=200.pdf}
+		\caption{Average number of clusters for Barabasi--Albert network with $n=200$}
+\end{figure}
+
+We can see on the above figure that we obtain smaller average number of clusters for Barabasi--Albert networks ($m \geq 4$) than for complete graph when $\epsilon \geq 0.08$. Interestingly, average number of clusters is the lowest for $m=4$ when $\epsilon$ varies from $0.10$ to $0.17$ and then for bigger $\epsilon$ it is even smaller for $m=2$. When we investigated frequency of reaching consensus, it turned out that networks with $m=4$ were reaching consensus very frequently, but with $m=2$ less frequently (see Figure \ref{freq_ba}). Taking that into account, it might seem strange that $m=2$ lead to the smallest average number of clusters (closest to $1$) when $\epsilon$ is around $0.20$. Actually, we obtain for $m=2$ very frequently one big cluster and a lot of single agents who do not change their opinions, when we count number of clusters we are skipping them. On the other hand, when we check if consensus was established we require that at least $80\%$ of network is in this cluster, sometimes for $m=2$ size of this one cluster is smaller than $80\%$ of network size and thus consensus is not established.
+
+\subsubsection{Various networks}
+
+We will also compare various networks on one figure to see if the fragmentarization of opinions differs between them.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/groups10_various.pdf}
+		\caption{Average number of clusters for various networks with $n=200$}
+\end{figure}
+
+We can see that Watts--Strogatz networks with $k=4,6$ are more fragmentized for small confidence levels than Barabasi--Albert networks with $m=4,6$, it happens so due to wide--spread topology of Watts--Strogatz network and centralized topology of Barabasi--Albert network. In Barabasi--Albert network, the most--connected agents, called hubs, can be very influential to others in the process of opinions formation.
+\indent
+
+For confidence level $\epsilon \geq 0.15$ Watts--Strogatz network with $k=6$ has the lowest average number of clusters, as its topology favors establishing consensus.
+
+\subsection{Relaxation time}
 
 \section{Summary}
 \indent
