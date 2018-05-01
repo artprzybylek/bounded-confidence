@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mp
 
 
-mp.rcParams['font.size'] = 15
+mp.rcParams['font.size'] = 11
 
 
 def plot_cg_compare(num_of_agents, legend, style='*-'):
@@ -31,6 +31,7 @@ def plot_cg():
         plt.plot(results_eps, results_values, '.-')
     legend = list('n=' + str(n) for n in ['100', '200', '500'])
     plt.legend(legend)
+    plt.grid(linestyle='--')
     plt.title('Network: complete graph')
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
@@ -44,6 +45,7 @@ def plot_ws_changing_k():
     num_of_agents = '200'
     p = '0.3'
     filename = network + '_' + num_of_agents + '_' + p + '.pkl'
+    p = '0.2'
     with open(filename, 'rb') as f:
         consensus_frequencies = pickle.load(f)
     plt.figure()
@@ -55,11 +57,37 @@ def plot_ws_changing_k():
     legend = list('k='+str(k) for k in consensus_frequencies.keys())
     plot_cg_compare(num_of_agents, legend)
     plt.legend(legend)
+    plt.grid(linestyle='--')
     plt.title('Network: Watts-Strogatz, n={0}, p={1}'.format(num_of_agents, p))
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
     output_file = '{0}freq_consensus_{1}_{2}_p={3}.pdf'.format(output_path, network, num_of_agents,
                                                                str(p).replace('.', ','))
+    plt.savefig(output_file)
+
+
+def plot_ws_changing_eps():
+    output_path = 'plots/'
+    network = 'ws'
+    num_of_agents = '200'
+    p = '0.2'
+    filename = 'eps_' + network + '_' + num_of_agents + '_' + p + '.pkl'
+    with open(filename, 'rb') as f:
+        consensus_frequencies = pickle.load(f)
+    plt.figure()
+    for arg in consensus_frequencies:
+        results = sorted(consensus_frequencies[arg].items(), key=lambda x: x[0])
+        results_k = [x[0] for x in results]
+        results_values = [x[1] for x in results]
+        plt.plot(results_k, results_values, '.-')
+    legend = list(r'$\epsilon={}$'.format(eps) for eps in consensus_frequencies.keys())
+    plt.legend(legend)
+    plt.grid(linestyle='--')
+    plt.title('Network: Watts-Strogatz, n={0}, p={1}'.format(num_of_agents, p))
+    plt.xlabel('k')
+    plt.ylabel('frequency')
+    output_file = '{0}eps_freq_consensus_{1}_{2}_p={3}.pdf'.format(output_path, network, num_of_agents,
+                                                                 str(p).replace('.', ','))
     plt.savefig(output_file)
 
 
@@ -80,6 +108,7 @@ def plot_ws_changing_num():
     legend = list('k='+str(k) for k in consensus_frequencies.keys())
     plot_cg_compare(num_of_agents, legend)
     plt.legend(legend)
+    plt.grid(linestyle='--')
     plt.title('Network: Watts-Strogatz, n={0}, p={1}'.format(num_of_agents, p))
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
@@ -105,6 +134,7 @@ def plot_ws_changing_p():
     legend = list('p=' + p for p in ['0.1', '0.2', '0.3', '0.4', '0.5'])
     # plot_cg_compare(num_of_agents, legend)
     plt.legend(legend)
+    plt.grid(linestyle='--')
     plt.title('Network: Watts-Strogatz, n={0}, k={1}'.format(num_of_agents, k))
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
@@ -128,6 +158,7 @@ def plot_ws_changing_n():
         plt.plot(results_eps, results_values, '.-')
     plt.legend(list('n=' + n for n in ['100', '200', '500']))
     plt.title('Network: Watts-Strogatz, k={0}, p={1}'.format(k, p))
+    plt.grid(linestyle='--')
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
     output_file = '{0}freq_consensus_{1}_k={2}_p={3}.pdf'.format(output_path, network, k, str(p).replace('.', ','))
@@ -151,6 +182,7 @@ def plot_ba_changing_m():
     plot_cg_compare(num_of_agents, legend)
     plt.legend(legend)
     plt.title('Network: Barabasi-Albert, n={0}'.format(num_of_agents))
+    plt.grid(linestyle='--')
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
     output_file = '{0}freq_consensus_{1}_{2}.pdf'.format(output_path, network, num_of_agents)
@@ -171,6 +203,7 @@ def plot_ba_changing_n():
         results_values = [x[1] for x in results]
         plt.plot(results_eps, results_values, '.-')
     plt.legend(list('n='+n for n in ['100', '200', '500']))
+    plt.grid(linestyle='--')
     plt.title('Network: Barabasi-Albert, m={0}'.format(m))
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
@@ -203,6 +236,7 @@ def plot_comparison():
     plt.xlabel('confidence level')
     plt.ylabel('frequency')
     plt.title('n=200')
+    plt.grid(linestyle='--')
     output_file = '{0}freq_consensus_compare.pdf'.format(output_path)
     plt.savefig(output_file)
 
@@ -211,6 +245,7 @@ if __name__ == "__main__":
     plot_comparison()
     plot_cg()
     plot_ws_changing_k()
+    plot_ws_changing_eps()
     plot_ws_changing_p()
     plot_ws_changing_n()
     plot_ba_changing_m()

@@ -18,6 +18,27 @@ def bounded_confidence(network, eps_left, eps_right, select_neighbors, opinion_d
     return opinions_in_time
 
 
+def bc_with_noise(network, eps):
+    number_of_agents = len(network.nodes())
+    agent_opinions = nx.get_node_attributes(network, 'opinion')
+    opinions_in_time = {agent: [agent_opinions[agent]] for agent in agent_opinions}
+    while True:
+        _simulate_one_time_step_noisy(number_of_agents, network, eps, agent_opinions)
+        if _are_opinions_changed_noisy(agent_opinions, opinions_in_time):
+            _save_current_opinions(agent_opinions, opinions_in_time)
+        else:
+            break
+    return opinions_in_time
+
+
+def _simulate_one_time_step_noisy(number_of_agents, network, eps, agent_opinions):
+    pass
+
+
+def _are_opinions_changed_noisy(agent_opinions, opinions_in_time):
+    pass
+
+
 def noisy_bc(network, R, sigma, time_limit=100, time_step=0.01):
     number_of_agents = len(network.nodes())
     agent_opinions = nx.get_node_attributes(network, 'opinion')
@@ -105,26 +126,21 @@ def _save_current_opinions(agent_opinions, opinions_in_time):
 
 
 def main():
-    number_of_agents = 50
-    eps = 0.05
-    g = nx.complete_graph(number_of_agents)
-    opinions = dict((x, x/(number_of_agents - 1)) for x in range(number_of_agents))
-    nx.set_node_attributes(g, name='opinion', values=opinions)
-    opinions_dynamics = bounded_confidence(g, eps, eps, select_all)
-    opinions_list = list(opinions_dynamics.values())
-    number_of_time_steps = len(opinions_list[0])
-    plt.figure()
-    for opinion_profile in opinions_list:
-        plt.plot(range(number_of_time_steps), opinion_profile, '.-')
+    number_of_agents = 200
+    eps = 0.22
 
-    plt.figure()
-    for index in range(9):
-        opinions_dynamics = bounded_confidence(g, eps, eps, select_all)
-        opinions_list = list(opinions_dynamics.values())
-        number_of_time_steps = len(opinions_list[0])
-        for opinion_profile in opinions_list:
-            plt.subplot(331+index)
-            plt.plot(range(number_of_time_steps), opinion_profile, '.-')
+    for _ in range(1):
+        plt.figure()
+        for index in range(9):
+            g = nx.watts_strogatz_graph(200, 20, 0.2)
+            opinions = dict((x, random.random()) for x in range(number_of_agents))
+            nx.set_node_attributes(g, name='opinion', values=opinions)
+            opinions_dynamics = bounded_confidence(g, eps, eps, select_all)
+            opinions_list = list(opinions_dynamics.values())
+            number_of_time_steps = len(opinions_list[0])
+            for opinion_profile in opinions_list:
+                plt.subplot(331+index)
+                plt.plot(range(number_of_time_steps), opinion_profile, '.-')
     plt.show()
 
 

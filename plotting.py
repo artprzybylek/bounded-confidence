@@ -7,7 +7,7 @@ from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
 
-mp.rcParams['font.size'] = 13
+mp.rcParams['font.size'] = 11
 mp.rcParams['axes.linewidth'] = .1
 mp.rcParams['lines.linewidth'] = .1
 mp.rcParams['patch.linewidth'] = .1

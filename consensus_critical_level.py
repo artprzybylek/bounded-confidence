@@ -78,8 +78,8 @@ def main_ws():
     num_of_agents = 200
     network_type = 'ws'
     for p in [0.2]:
-        filename = '1_' + network_type + '_' + str(num_of_agents) + '_' + str(p) + '.pkl'
-        k_values = [4, 6]
+        filename = '2_' + network_type + '_' + str(num_of_agents) + '_' + str(p) + '.pkl'
+        k_values = [4, 6, 8, 10, 12]
         confidence_levels = np.arange(0.16, 0.31, 0.01)
         consensuses = {k: {} for k in k_values}
         for k in k_values:
@@ -87,6 +87,22 @@ def main_ws():
             for eps in confidence_levels:
                 consensuses[k][eps] = consensus_frequency(network_type, eps, num_of_agents, k=k, p=p)
         save_res(filename, consensuses)
+
+
+def main_ws_eps():
+    num_of_agents = 200
+    network_type = 'ws'
+    for p in [0.2]:
+        confidence_levels = [0.18, 0.2, 0.22, 0.24, 0.26]
+        filename = 'eps_' + network_type + '_' + str(num_of_agents) + '_' + str(p) + '.pkl'
+        k_values = [4, 6, 8, 10, 12, 14, 16, 18, 20]
+        consensuses = {eps: {} for eps in confidence_levels}
+        for eps in confidence_levels:
+            print(eps)
+            for k in k_values:
+                consensuses[eps][k] = consensus_frequency(network_type, eps, num_of_agents, k=k, p=p)
+        save_res(filename, consensuses)
+
 
 
 def main_ws1():
@@ -106,6 +122,6 @@ def main_ws1():
 
 if __name__ == "__main__":
     t0 = time.time()
-    main_ws()
+    main_ws_eps()
     t1 = time.time()
     print(t1-t0)
