@@ -22,7 +22,7 @@
 \begin{titlepage}
 	\maketitle
 	\begin{abstract}
-	In this paper we will investigate impact of network topology on proccess of spreading opinions in Bounded Confidence model. We will conduct Monte Carlo simulations on various model networks and study distribution of final opinions, dynamics of changes, fragmentation of opinions, time of relaxation and consensus establishing.
+	In this paper we will investigate impact of network topology on process of spreading opinions in Bounded Confidence model. We will conduct Monte Carlo simulations on various model networks and study distribution of final opinions, dynamics of changes, fragmentation of opinions, time of relaxation and establishing of consensus.
 	\end{abstract}
 \end{titlepage}
 
@@ -32,36 +32,83 @@
 \newpage
 
 \section{Introduction}
-%\section{Modelling opinions dynamics}
+
+Modeling opinions dynamics in social networks is a subject of great interest that has been developed in statistical physics \cite{sp}. Scientists, who study topic of opinions formation try to describe phenomenas such as conformity, acting independently or disagreement which can be observed in humans behavior by mathematical models. 
+\indent
+
+There are numerous models that can be applied to various cases of opinions evolution in which humans interactions play very important role. For example, one could we think of voting in referendum, when opinion can be described by two states ("yes" or "no"). To this case the $q$--voter model may be applied \cite{qv}. Basic idea behind model is that voters can change their opinions influenced by group of others. 
+\indent
+
+Another examples of models developed for the purpose of opinions dynamics in which agents can choose between two opposite opinions are Majority rule (MR) model \cite{mr} and Sznajd model \cite{sm}. In MR model agents accept opinion shared by majority of their group, it can be applied to public debates. In Sznajd model agents act as conformists or non--conformists depending on unanimity of a given pair of neighbors.
+\indent
+
+All of mentioned models could be useful to describe social behavior in the process of opinions evolution. Basic assumption for these models is that agent can decide between exactly two opinions. We know that sometimes opinion can not be considered in categories "black or white" but instead many shades of gray are possible. We can say for instance "I think that their chances to win the tournament are 30\%." or "In my opinion we should look for cheaper option on vacations.". These sentences represent opinions which do not fall into pattern "0 or 1". Political opinion of individual is another example of such case, it might be "more to the left" or "more to the right". In order to model opinion dynamics of such opinions we could use continuous opinion space.
+\indent
+
+Continuous opinion space was used in Deffuant model \cite{dm}. The main idea in this model is that if opinions of two agents are similar then they adjust their opinions to each other. The model parameter which regulates how eager are agents to rely on others is called confidence level. Similar agents behavior can be observed in Bounded Confidence (BC) model proposed by Hegselmann and Krause \cite{bc}. In BC model agents adjust their opinions not only to one neighbor but to all neighbors whose opinions are similar (in terms of confidence level), hence the model may be applied to public debates and talks on forum when participants of the meeting express their opinions and try to find common solution on a given problem.
+\indent
+
+In this paper we want to investigate opinion dynamics in BC model. We should remember that dynamics of agents opinions depends not only on the model properties but also on structure of the network. In real life situations, for example on public debates or forums, we often know about opinions of few other people and not necessary the whole group. This fact could have crucial meaning in terms of our attitude. In order to find out what influence does connectivity between agents has on their behavior, we will consider various network topologies which could be applied as an underlying structure for the model. We will study not only the dynamics of agents opinions changing in network, but also typical final states of opinions evolution process for given confidence levels, especially investigating cases when consensus is being established.
+
+\section{Network topologies}
+Throughout this paper we will consider 3 types of network topologies:
+\begin{itemize}
+\item complete graph
+\item Watts--Strogatz graph \cite{ws}
+\item Barabasi--Albert graph \cite{ba}
+\end{itemize}
+All of these topologies could be applied to simulate structure of different types of communities. We will denote $n$ as number of agents in network. We can see examples of model networks on the below figure.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/all_nets.pdf}
+		\caption{Example networks of various topologies}
+		\label{nets}
+\end{figure}
+
+\subsubsection{Complete graph}
+In complete graph any chosen agent is connected with all other agents (see left--most graph on Figure \ref{nets}). In appliance to BC model it means that any agent in considered community could influence everybody else, of course if two opinions are similar in terms of confidence level. This topology may be applied for some small discussion groups where everybody shares own point of view. Another use case, for bigger group sizes, might be opinion forming by non--verbal transmission. For example, we could change our opinion on what is now trendy in fashion by looking on what clothes do others wear.
+
+\subsubsection{Watts--Strogatz}
+In Watts--Strogatz model every agent has the same number of connections $k$ and is initially connected with $k/2$ closest agents on the left and $k/2$ closest agents on the right. Then, he can change his neighbor to other agent in different graph region with probability $p$ (see central graph on Figure \ref{nets}). The model has small--world property, which means that it is good for simulating small communities. Watts--Strogatz graphs have non--centralized structure (especially when $p$ is small), which means that opinions transmission between two randomly chosen agents might take some time. We could think of opinions spread in our living neighborhood or at round--table meeting as Watts--Strogatz model use cases to BC model.
+
+\subsubsection{Barabasi--Albert}
+Barabasi--Albert network is constructed from initially connected network of $m_0$ agents and then by iteratively attaching new agents with $m$ new connections. New connections are created from new agent to one of agents already being in the network. New agents preference which agent to choose is proportional to number of connections that given agent already has. This manner typically leads to formation of a few hubs -- agents who have a lot of connections, we might call them central agents in the network (see right--most graph on Figure \ref{nets}). This property implies more central structure in the network. We could think of Internet communities such as social medias and forums as a good example of networks with similar topology. Also political parties or some companies in which a few individuals who are highest in the hierarchy are the most influential ones, may be considered as networks similar to Barabasi--Albert model.
+
 \section{Bounded Confidence model}
+
+The basic idea behind Bounded Confidence (BC) model is that agents interact with others who have similar opinions and customize their own opinions slightly to them. Interaction is not possible if two opinions differ too much. Model parameter -- confidence level $\epsilon$ gives us information how much agents rely on others. If confidence level is small, then agents act like non--conformists, sticking to their own opinions. On the other side, when confidence level is big, agents are more open for discussion and taking into account others points of view, acting more like conformists. The confidence level might take different values, when applied to opinion dynamics processes. For example, when political party wants to state their position on a given issue, confidence level should be big in order to achieve consensus -- one common opinion. For the case of smaller confidence level we could think of political discussion on family meeting, people then express their opinions, but it is rather rare that they would change their mind strongly by being influenced by others.
+\indent
+
+Although various variants of intervals of confidence levels could be considered (for instance asymmetric confidence levels \cite{bc} or  various confidence levels assigned individually to agents), we will in this work investigate the case of symmetric confidence levels. Then, opinion of $i$-th agent in time $t+1$ can be described by the following equation:
+\begin{equation}
+x_i(t+1) = \left| I(i, x_i(t)) \right|^{-1} \sum_{j \in I(i, x_i(t))} {x_j(t)},
+\label{bceq}
+\end{equation} 
+where $x_i(t)$ is opinion of $i$-th agent at time $t$ and $I(i, x_i(t))$ is the set of neighbors of $i$-th agent for which following equation holds: $\left| x_i(t) - x_j(t) \right| < \epsilon$. 
 	
 \subsection{Symmetric confidence level}
-\subsection{Opinion--dependent confidence level}
+%\subsection{Opinion--dependent confidence level}
 %\subsection{Agent--dependent confidence level}
 
 \section{Simulations}
 
 \subsection{Simulations methodology}
 
-We will perform simulations of the bounded confidence model on various underlying network topologies:
-\begin{itemize}
-\item complete graph
-\item Watts--Strogatz graph
-\item Barabasi--Albert graph
-\end{itemize}
-Througout this section we will use some common names for network parameters:
+We will perform simulations of the bounded confidence model on mentioned earlier underlying network topologies. Throughout this section we will use some common names for network parameters:
 \begin{itemize}
 \item $n$: size of the network
-\item $k$: mean degree in Watts--Strogatz graph
-\item $p$: probability of changing edge in creation of Watts--Strogatz graph
-\item $m$: number of new connections for each node in creation of Barabasi--Albert graph
+\item $k$: mean degree in Watts--Strogatz network
+\item $p$: probability of changing edge in process of creation of Watts--Strogatz network
+\item $m$: number of new connections for each node in process of creation of Barabasi--Albert network
 \end{itemize}
 Changing parameters both of the model and the network, we will study such features as:
 \begin{itemize}
 \item impact of confidence level for reaching consensus
 \item distribution of final opinions
-\item opinions changes through simulation
+\item dynamics of opinions changes
 \item fragmentation of opinions
+\item relaxation time
 \end{itemize}
 
 For each simulation of the model we will start with new instance of underlying network and set of random agent opinions with uniform distribution $\mathcal{U}(0, 1)$. Then, in each step we will $n$--times randomly choose an agent and change his opinion by applying bounded confidence model rule. We will consider simulation as finished when none of the agents will change his opinion by more than 0.001 in one simulation step. 
@@ -70,7 +117,7 @@ For each simulation of the model we will start with new instance of underlying n
 We will conduct simulations on the machine with dual--core 1.8 GHz processor: AMD E2-3000M APU. We will use Python 3.6.4 programming language.
 
 \subsection{Single simulations of the model}
-In order to see how opinions changes through time, we will plot agents opinions against time for several single simulations of Bounded Confidence model. We will do this for 4 different values of confidence level: $\epsilon=0.05, 0.15, 0.25, 0.35$ using different underlying network topologies.
+In order to see how opinions change through time, we will plot agents opinions against time for several single simulations of Bounded Confidence model. We will do this for 4 different values of confidence level: $\epsilon=0.05, 0.15, 0.25, 0.35$ using different underlying network topologies.
 
 \subsubsection{Complete graph}
 
@@ -91,7 +138,7 @@ In most cases biggest changes of opinions occur in early phase of opinion dynami
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/single_ws_50_10_0,3.pdf}
 		\caption{Opinions dynamics for Watts--Strogatz network with $n=50$, $k=10$, $p=0.3$}
 \end{figure}
-For Watts--Strogatz networks we can observe that for confidence level $\epsilon=0.05$ fragmentarization of opinions also occurs but this time much more clusters are formed, which is caused by smaller number of connections, agents can not influence another ones if they do not know each other (even if their opinions are similiar). 
+For Watts--Strogatz networks we can observe that for confidence level $\epsilon=0.05$ fragmentarization of opinions also occurs but this time much more clusters are formed, which is caused by smaller number of connections, agents can not influence another ones if they do not know each other (even if their opinions are similar). 
 \indent
 
 For confidence level $\epsilon=0.15$ opinions evolution leaded to formation of 3 clusters. For confidence level $\epsilon=0.25$ most part of network reached consensus, excluding two agents who didn't change their initial opinions at all, in fact their opinions are extreme ones (close to 0 or 1). Interestingly, when confidence level was big enough ($\epsilon=0.35$) all agents in network decided to share one opinion.
@@ -106,11 +153,11 @@ Relaxation time of opinions formation is longer than for complete graph network,
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/single_ba_50_4.pdf}
 		\caption{Opinions dynamics for Barabasi--Albert network with $n=50$, $m=4$}
 \end{figure}
-In the case of Barabasi--Albert network we see that agents change their opinions mostly in the first phase of opinions dynamics. Due to small number of connections we have some agents who don't change their opinions for every considered consensus level. Usually their opinions are extreme ones. Excluding these non--influencial individuals, we may state that consensus was reached for $\epsilon=0.25, 0.35$.
+In the case of Barabasi--Albert network we see that agents change their opinions mostly in the first phase of opinions dynamics. Due to small number of connections we have some agents who don't change their opinions for every considered consensus level. Usually their opinions are extreme ones. Excluding these non--influential individuals, we may state that consensus was reached for $\epsilon=0.25, 0.35$.
 
 \subsection{Final opinions distribution}
 
-We will now investigate what is typical distribution of opinions in network depending on value of confidence level. We rounded final opinions of agents to two decimal places and calculated average frequency of opinions occurences. We present the results on three--dimensional plots. One dimension represents opinion space, second confidence level and third one is opinion frequency.
+We will now investigate what is typical distribution of opinions in network depending on value of confidence level. We rounded final opinions of agents to two decimal places and calculated average frequency of opinions occurences. We present the results on three--dimensional plots. First dimension represents opinion space, second confidence level and third one is opinion frequency.
 
 \subsubsection{Complete graph}
 
@@ -120,10 +167,10 @@ We will now investigate what is typical distribution of opinions in network depe
 		\caption{Average frequency of final opinions for complete graph network with $n=200$}
 \end{figure}
 
-For complete graph we obtained similiar results as in (Hegselmann and Krause 2002), however we have some agents with different opinions even if most of the network reach consensus ($\epsilon > 0.25$), it is caused by different updating schema, in our case there is non--zero probability that agent's opinion will be not influenced for some time and that in the same time other agents will change their opinions strongly enough to break confidence between them.
+For complete graph we obtained similar results as in (Hegselmann and Krause 2002), however we have some agents with different opinions even if most of the network reach consensus ($\epsilon > 0.25$), it is caused by different updating schema, in our case there is non--zero probability that agent's opinion will be not influenced for some time and that in the same time other agents will change their opinions strongly enough to break confidence between them.
 \indent
 
-Looking closer to average frequency of final opinions for complete graph, we can see that as the confidence level grows, the distribution of opinions is more centralised. For very small confidence level ($\epsilon=0.01$) opinions are distributed uniformly on interval $(0, 1)$ (fragmentarization). As confidence level increases, opinions distribution changes. When we look at confidence level $\epsilon=0.1$ we can observe similiar distribution in the middle of opinion space ($0.25-0.75$) but extreme opinions (close to 0 or 1) do not emerge and opinions in spaces $0.1-0.25$ and $0.75-0.9$ appear more frequently. This phenomena of disappearance of extreme opinions and more frequent appearance of opinions in two regions which are symmetric with respect to the middle of opinions space continues to evolve up to confidence level $\epsilon=0.2$. We can also see that as we are closer to confidence level $\epsilon=0.2$, in the middle of opinions space ($0.35-0.65$) less opinions survive, this is a typical case of polarization of opinions.
+Looking closer to average frequency of final opinions for complete graph, we can see that as the confidence level grows, the distribution of opinions is more centralized. For very small confidence level ($\epsilon=0.01$) opinions are distributed uniformly on interval $(0, 1)$ (fragmentarization). As confidence level increases, opinions distribution changes. When we look at confidence level $\epsilon=0.1$ we can observe similar distribution in the middle of opinion space ($0.25-0.75$) but extreme opinions (close to 0 or 1) do not emerge and opinions in spaces $0.1-0.25$ and $0.75-0.9$ appear more frequently. This phenomena of disappearance of extreme opinions and more frequent appearance of opinions in two regions which are symmetric with respect to the middle of opinions space continues to evolve up to confidence level $\epsilon=0.2$. We can also see that as we are closer to confidence level $\epsilon=0.2$, in the middle of opinions space ($0.35-0.65$) less opinions survive, this is a typical case of polarization of opinions.
 \indent
 
 If we increase confidence level again to $\epsilon=0.25$ we can observe changing from polarization of opinions to reaching consensus. In case of consensus final agents opinions concentrate around the middle of opinion space ($0.5$).
@@ -137,7 +184,7 @@ If we increase confidence level again to $\epsilon=0.25$ we can observe changing
 		\caption{Average frequency of final opinions for Watts--Strogatz network with $n=200$, $k=20$, $p=0.3$}
 \end{figure}
 
-Average frequency of final opinions for Watts--Strogatz network looks similiar to complete graph case but there are some differences worth mention. We can observe that for small confidence levels ($\epsilon<0.15$) extreme opinions still occur and these are rather single cases, because their frequency is close to 0. For confidence level $\epsilon=0.2$ distribution of opinions is also polarized and then for bigger confidence levels consensus is reached but still sometimes single extreme opinions survive.
+Average frequency of final opinions for Watts--Strogatz network looks similar to complete graph case but there are some differences worth mention. We can observe that for small confidence levels ($\epsilon<0.15$) extreme opinions still occur and these are rather single cases, because their frequency is close to 0. For confidence level $\epsilon=0.2$ distribution of opinions is also polarized and then for bigger confidence levels consensus is reached but still sometimes single extreme opinions survive.
 
 \subsubsection{Barabasi--Albert}
 
@@ -158,12 +205,13 @@ The following figure shows the impact of network size on frequency of reaching c
 		\centering
 		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/freq_consensus_cg.pdf}
 		\caption{Frequency of reaching consensus for complete graph network}
+		\label{freq_cg}
 \end{figure}
 
 We observe that for confidence level $\epsilon<0.21$ smaller networks are more likely to reach consensus state, while for $\epsilon>0.21$ bigger networks are more likely to reach consensus state. 
 \indent
 
-For networks of sizes $n=100$, $n=200$ when confidence level $epsilon\leq0.18$ we hardly ever reach consensus, while $epsilon\geq0.27$ leads to reaching consensus almost every time.
+For networks of sizes $n=100$, $n=200$ when confidence level $epsilon\leq0.18$ we hardly ever reach consensus, while $\epsilon\geq0.27$ leads to reaching consensus almost every time.
 For network size $n=500$ we hardly ever reach consensus when $\epsilon\leq0.2$ and almost every time reach censensus when $\epsilon\geq0.24$. The difference between these critical confidence levels is in this case much smaller, which suggests that when network size $n \to \infty$ there might be critical confidence level such that for smaller level consensus is unlikely to be reached and for bigger level consensus is almost sure to be reached. 
 
 \subsubsection{Watts--Strogatz}
@@ -287,7 +335,7 @@ We will also study what is the dynamics of opinions changes depending on given n
 		\caption{Average changes of opinions for complete graph}
 \end{figure}
 
-We can see that bigger the value of confidence level is, average agents opinions change is also bigger. We observe linear growth up to confidence level $\epsilon=0.17$, at this point value of average opinions change is around $0.13$. Further on, up to $\epsilon=0.2$ opinions change increases only slightly, to this point plots for different network sizes are similiar. We may claim that $\epsilon=0.2$ is a breakpoint, because from that point small increase of confidence level causes significant increase of opinions change (especially for $n=500$). We also notice that the steepest growth is for biggest networks ($n=500$) and the mildest growth is for smallest networks ($n=100$). Finally, opinions changes stabilize on value $0.25$, which is typical case of consensus.
+We can see that bigger the value of confidence level is, average agents opinions change is also bigger. We observe linear growth up to confidence level $\epsilon=0.17$, at this point value of average opinions change is around $0.13$. Further on, up to $\epsilon=0.2$ opinions change increases only slightly, to this point plots for different network sizes are similar. We may claim that $\epsilon=0.2$ is a breakpoint, because from that point small increase of confidence level causes significant increase of opinions change (especially for $n=500$). We also notice that the steepest growth is for biggest networks ($n=500$) and the mildest growth is for smallest networks ($n=100$). Finally, opinions changes stabilize on value $0.25$, which is typical case of consensus.
 
 \indent
 
@@ -314,10 +362,10 @@ For Watts--Strogatz network we compare opinions changes depending on $k$ paramet
 On both of the above plots there are single curves which differs the most from the rest, for the frist plot it is $k=4$ and for the second it is $k=10$. 
 \indent
 
-In the first case, $k=4$ means that agents have too less connections with neighbours to change their opinions significantly, small number of potential influential neighbours causes agents to stick with their own opinion if none of neighbours has similiar opinion. If we increase $k$ to $6$ then chances of findind someone influential grow for 50\% and that is why then agents change their opinions more. For $k=6-12$ we observe that more connections means larger opinions changes if $\epsilon < 15$. For $0.15 \leq \epsilon \leq 0.20$ obtained results are similiar and then for $\epsilon > 0.20$ we see again   bigger opinions changes for bigger $k$. It might look strange that for $k=6$ we have smaller average opinions change than for $k=8, 10, 12$ for $0.2 \leq \epsilon \leq 0.25$, whereas it was shown that for $k=6$ agents are more eager to agree on consensus on considered confidence levels (see Figure \ref{freq_ws_eps}). It happens so because even when most part of network decide to share the same opinion (at least 80\% of network), there are still some agents (especially for small $k$), who stick to their own opinions, which causes lowering of average opinions change.
+In the first case, $k=4$ means that agents have too less connections with neighbours to change their opinions significantly, small number of potential influential neighbours causes agents to stick with their own opinion if none of neighbours has similar opinion. If we increase $k$ to $6$ then chances of findind someone influential grow for 50\% and that is why then agents change their opinions more. For $k=6-12$ we observe that more connections means larger opinions changes if $\epsilon < 15$. For $0.15 \leq \epsilon \leq 0.20$ obtained results are similar and then for $\epsilon > 0.20$ we see again   bigger opinions changes for bigger $k$. It might look strange that for $k=6$ we have smaller average opinions change than for $k=8, 10, 12$ for $0.2 \leq \epsilon \leq 0.25$, whereas it was shown that for $k=6$ agents are more eager to agree on consensus on considered confidence levels (see Figure \ref{freq_ws_eps}). It happens so because even when most part of network decide to share the same opinion (at least 80\% of network), there are still some agents (especially for small $k$), who stick to their own opinions, which causes lowering of average opinions change.
 \indent
 
-On the second plot we see that opinions changes for $k=10$ are the smallest ones for $\epsilon \leq 0.08$ and the biggest ones for $0.11 \leq \epsilon \leq 0.23$. For small confidence level, e.g. $\epsilon=0.05$ and for $k=10$ probability that at least one neighbor of given agent will have similiar opinion is small and that is why agents do not change their opinions much, while for $k=20$ this probability is bigger and agents change their opinions more. For $\epsilon$ around point $0.2$ we obtain bigger opinions changes for $k=10$, it is the case when consensus is reached more often for that value of $k$ than for $k=20$ or bigger (see Figure \ref{freq_ws}). We can also notice that starting from $k=20$ we obtain similiar results in comparison to complete graph (linear growth up to $\epsilon=0.15$, steep growth from $\epsilon=0.20$ to $\epsilon=0.25$ and average opinion change around level $0.25$ for $\epsilon>0.25$.
+On the second plot we see that opinions changes for $k=10$ are the smallest ones for $\epsilon \leq 0.08$ and the biggest ones for $0.11 \leq \epsilon \leq 0.23$. For small confidence level, e.g. $\epsilon=0.05$ and for $k=10$ probability that at least one neighbor of given agent will have similar opinion is small and that is why agents do not change their opinions much, while for $k=20$ this probability is bigger and agents change their opinions more. For $\epsilon$ around point $0.2$ we obtain bigger opinions changes for $k=10$, it is the case when consensus is reached more often for that value of $k$ than for $k=20$ or bigger (see Figure \ref{freq_ws}). We can also notice that starting from $k=20$ we obtain similar results in comparison to complete graph (linear growth up to $\epsilon=0.15$, steep growth from $\epsilon=0.20$ to $\epsilon=0.25$ and average opinion change around level $0.25$ for $\epsilon>0.25$.
 
 \indent
 
@@ -340,7 +388,32 @@ For $\epsilon=0.25$ we observe that the dynamics of opinions changing last the l
 		\caption{Average changes of opinions in time space for Watts--Strogatz network with $n=200$, $p=0.2$}
 \end{figure}
 
-All plots for $k \geq 20$ look similiar to each other, again biggest changes in opinions dynamics can be observed at the beginning. At confidence level $\epsilon=0.05$ for $k \geq 20$ opinions does not stabilize so quickly as in case of $k=10$. When $\epsilon=0.15$ we see opposite situation, for $k=10$ opinions changes decrease very slowly. Interestingly for $\epsilon=0.25$ sometimes stabilization of opinions last long for $k \geq 20$, this behavior could be caused by slow transformation from polarization of opinions to consensus. For $\epsilon=0.35$ consensus can be reached quicker as we see that opinions stabilize after few steps.
+All plots for $k \geq 20$ look similar to each other, again biggest changes in opinions dynamics can be observed at the beginning. At confidence level $\epsilon=0.05$ for $k \geq 20$ opinions does not stabilize so quickly as in case of $k=10$. When $\epsilon=0.15$ we see opposite situation, for $k=10$ opinions changes decrease very slowly. Interestingly for $\epsilon=0.25$ sometimes stabilization of opinions last long for $k \geq 20$, this behavior could be caused by slow transformation from polarization of opinions to consensus. For $\epsilon=0.35$ consensus can be reached quicker as we see that opinions stabilize after few steps.
+
+\indent
+
+We would also like to check what influence on opinions changes does $p$ parameter has.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/changes_Watts-Strogatz_n=200_k=20.pdf}
+		\caption{Average changes of opinions for Watts--Strogatz network with $n=200$, $k=20$}
+\end{figure}
+
+Results for changes of opinions are similar for various values of parameter $p$. However, there are noticeable differences in region $0.15 \leq \epsilon \leq 0.25$. In that region agents in networks with smaller value of $p$ tend to change their opinions more likely.
+
+\indent
+
+Now we will look on the dynamics of changing opinions for networks with various $p$.
+
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_changes_Watts-Strogatz_n=200_k=20.pdf}
+		\caption{Average changes of opinions in time space for Watts--Strogatz network with $n=200$, $k=20$}
+\end{figure}
+
+When $\epsilon=0.05$ agents in network with $p=0.5$ change opinions the slowest and in network with $p=0.1$ the fastest. The opposite results are for $\epsilon \geq 0.15$. The bigger is $p$, the more random neighbors agents have and therefore more centralized the network is. More centralized networks promote faster opinion changing for big enough confidence level and slower opinion changing for small confidence level.
 
 \subsubsection{Barabasi--Albert}
 
@@ -352,7 +425,7 @@ Let's now look how final opinions differ from initial for Barabasi--Albert netwo
 		\caption{Average changes of opinions for Barabasi--Albert network with $n=200$}
 \end{figure}
 
-We can see that for $m=2$ opinions changes are smaller than for bigger values of $m$, which is caused by too small connections in network. For $m=4$ we observe smaller changes than for $m=6,8,10$ at confidence level up to $\epsilon=0.10$ but for $\epsilon$ around point $0.2$ agents in networks with $m=4$ change their opinions the most. For $m \geq 6$ curves have similiar shape. Average opinions changes for considered Barabasi--Albert networks are lower than for complete graph when confidence level is small ($\epsilon \leq 0.05$) but higher when $0.10 \leq \epsilon \leq 0.20$.
+We can see that for $m=2$ opinions changes are smaller than for bigger values of $m$, which is caused by too small connections in network. For $m=4$ we observe smaller changes than for $m=6,8,10$ at confidence level up to $\epsilon=0.10$ but for $\epsilon$ around point $0.2$ agents in networks with $m=4$ change their opinions the most. For $m \geq 6$ curves have similar shape. Average opinions changes for considered Barabasi--Albert networks are lower than for complete graph when confidence level is small ($\epsilon \leq 0.05$) but higher when $0.10 \leq \epsilon \leq 0.20$.
 
 \begin{figure}[H]
 		\centering
@@ -395,7 +468,7 @@ In this section we will study the issue of how many clusters are formed at the e
 		\caption{Average number of clusters for complete graph network}
 \end{figure}
 
-We can observe that number of clusters in complete graph network decreases when confidence level increases. For different network sizes results are very similiar. We can distinguish few interesting cases:
+We can observe that number of clusters in complete graph network decreases when confidence level increases. For different network sizes results are very similar. We can distinguish few interesting cases:
 \begin{itemize}
 \item for small confidence level, e.g. $\epsilon = 0.05$, network typically partitions into few clusters having different opinions
 \item for confidence level $0.17 \leq \epsilon \leq 0.21$ network divides into two clusters (polarization of opinions)
@@ -416,7 +489,19 @@ For Watts--Strogatz network we want to compare number of clusters depending on c
 Looking on the plots with $k=4,6,8,10,12$ we see that bigger the value of $k$ is, we can obtain less than 10 clusters for smaller confidence levels. On the other hand, for confidence level $0.16 \leq \epsilon \leq 0.20$ average number of clusters is a little bit smaller for small values of $k$ ($k=6,8$), it is so due to more frequent reaching consensus (see Figure \ref{freq_ws_eps}). We also notice number of clusters for polarization of opinions (which is $2$) is typical already for $\epsilon=0.13$. No more than one main cluster remains when $\epsilon \geq 0.23$.
 \indent
 
-Comparing the case of $k=10$ to cases $k=20,30,40,50$ we notice that for small confidence level up to $\epsilon=0.07$ average number of clusters is bigger when $k=10$. On the other hand, for $\epsilon \geq 0.10$ average number of clusters is the smallest when $k=10$. Results for $k=20$ and bigger values of $k$ are similiar to each other and to complete graph case.
+Comparing the case of $k=10$ to cases $k=20,30,40,50$ we notice that for small confidence level up to $\epsilon=0.07$ average number of clusters is bigger when $k=10$. On the other hand, for $\epsilon \geq 0.10$ average number of clusters is the smallest when $k=10$. Results for $k=20$ and bigger values of $k$ are similar to each other and to complete graph case.
+
+\indent
+
+Now we will compare results for various values of parameter $p$.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/groups10_Watts-Strogatz_n=200_k=20.pdf}
+		\caption{Average number of clusters for Watts--Strogatz network with $n=200$, $k=20$}
+\end{figure}
+
+We can see that changing parameter $p$ does not have big impact on number of formed clusters, results are pretty similar, only for small confidence levels (e.g. $\epsilon=0.05$) more clusters form when $p$ is smaller.
 
 \subsubsection{Barabasi--Albert}
 
@@ -447,7 +532,130 @@ For confidence level $\epsilon \geq 0.15$ Watts--Strogatz network with $k=6$ has
 
 \subsection{Relaxation time}
 
+In this section we will check what is the relaxation time ($t$) of opinions evolution process in bounded confidence model depending on confidence level for various network topologies.
+
+\subsubsection{Complete graph}
+
+We compare relaxation time for complete graph networks with various sizes.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_completegraph.pdf}
+		\caption{Average relaxation time for complete graph network}
+\end{figure}
+
+We see that bigger the size of network is, relaxation time is longer, especially for confidence level up to $\epsilon=0.24$. We see smaller differences between results for various sizes when $\epsilon > 0.27$, in this case relaxation time is between $11$ and $13$. 
+\indent
+
+For confidence level up to $\epsilon=0.15$ average relaxation time slowly increases for all sizes and also has not small variance (especially for $n=500$). Typical values of relaxation time for $\epsilon=0.10$ are:
+\begin{itemize}
+\item $t=12$ for $n=100$
+\item $t=14$ for $n=200$
+\item $t=17$ for $n=500$
+\end{itemize}
+We observe large increases of average relaxation times around confidence levels $\epsilon=0.21, 0.22$, this change in relaxation time responds to start of transition from polarization to consensus (see Figure \ref{freq_cg}). We observe following peak regions for average relaxation times:
+\begin{itemize}
+\item $0.22 \leq \epsilon \leq 0.27$ for $n=100$ with relaxation time around $t=15$
+\item $0.22 \leq \epsilon \leq 0.26$ for $n=200$ with relaxation time around $t=18$
+\item $0.21 \leq \epsilon \leq 0.24$ for $n=500$ with relaxation time around $t=27$
+\end{itemize}
+Confidence levels for these peak regions respond to achieving consensus on frequency rate around $0.4-0.95$ (see Figure \ref{freq_cg}).
+
+\subsubsection{Watts--Strogatz}
+For Watts--Strogatz network we compare average relaxation times for various values of parameter $k$.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/pairs_steps_ws.pdf}
+		\caption{Average relaxation time for Watts--Strogatz network with $n=200$, $p=0.2$}
+\end{figure}
+
+For $k$ from $4$ to $12$ we see common results for average relaxation time depending on confidence level. As confidence level increases, relaxation time also increases, achieve peak value and after that it decreases. We also notice that for smaller $k$ peaks of relaxation times are bigger. Generally networks with smaller $k$ parameter relax faster for small confidence level $\epsilon \leq 0.07$ but slower for big confidence level $\epsilon \geq 0.18$. Peak values of relaxation times are around:
+\begin{itemize}
+\item $t=160$ for $k=4$ when $\epsilon=0.19$
+\item $t=160$ for $k=6$ when $\epsilon=0.16$
+\item $t=130$ for $k=8$ when $\epsilon=0.12$
+\item $t=120$ for $k=10$ when $\epsilon=0.11$
+\item $t=100$ for $k=12$ when $\epsilon=0.09$
+\end{itemize} 
+
+When we consider $k=10, 20, 30, 40, 50$, we can observe much more faster relaxing of networks with $k \geq 20$ when $\epsilon \geq 0.10$. For $k \geq 20$ networks achieve peak of relaxation time for small confidence levels and after peak relaxation time decreases, in region $0.20 < \epsilon < 0.25$ we observe little increase in relaxation times due to more frequent achieving of consensus (see Figure \ref{freq_ws}). We also notice that Watts--Strogatz networks relax slower than complete graph networks.
+
+\indent
+
+We will also manipulate parameter $p$ in order to see what impact does it have on relaxation time.
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_Watts-Strogatz_n=200_k=20.pdf}
+		\caption{Average relaxation time for Watts--Strogatz network with $n=200$, $k=20$}
+\end{figure}
+
+For confidence level big enough (in this case at least $\epsilon=0.08$) networks with small value of parameter $p$ relax much slower. For example when $\epsilon=0.20$ network with $p=0.5$ relax in time $t=22$, while network with $p=0.1$ relax in $t=49$ (more than twice slower). 
+
+\subsubsection{Barabasi--Albert}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_Barabasi-Albert_n=200.pdf}
+		\caption{Average relaxation time for Barabasi--Albert network with $n=200$}
+\end{figure}
+
+The bigger is the value of parameter $m$, the faster network achieve peak value of average relaxation time. After achieving peak, relaxation time decreases. For $m \geq 6$ we observe additionally second small peak of relaxation time around $\epsilon=0.22$. For small confidence level, e.g. $\epsilon=0.05$ weak--connected networks ($m=2,4$) relax much faster than networks with more connections ($m=6,8,10$). Confidence level $\epsilon \geq 0.15$ lead to the slowest relaxation of the smallest networks ($m=2$) and the fastest relaxation of the biggest networks ($m=10$). 
+
+\subsubsection{Various networks}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{/home/arti/studia/python/praca_magisterska/plots/steps_various.pdf}
+		\caption{Average relaxation time for various networks with $n=200$}
+\end{figure}
+
+When $\epsilon \geq 0.15$ we can see that Watts--Strogatz networks ($k=4,6$) relax slower than Barabasi--Albert networks ($m=4,6$) and much slower than complete graph networks. It is the consequence of non--centralized topology of Watts--Strogatz networks. Small confidence level, e.g. $\epsilon=0.05$ lead to the slowest relaxation of Barabasi--Albert networks. It is the case of slow changes initiated mainly by well--connected agents called hubs.
+
 \section{Summary}
 \indent
+
+\begin{thebibliography}{90}
+\bibitem{sp} 
+C. Castellano, S. Fortunato, V. Loreto
+  \emph{Statistical physics of social dynamics}.  
+Rev. Mod. Phys. 81, 591 (2009)
+
+\bibitem{qv} 
+C. Castellano, M.A. Munoz, R. Pastor-Satorras
+  \emph{The non-linear q-voter model}.  
+Physical Review E 80, 041129 (2009)
+
+\bibitem{mr} 
+S. Galam
+	\emph{Minority opinion spreading in random geometry}.
+Eur. Phys. J. B 25, 403-406 (2002)
+
+\bibitem{sm}
+K. Sznajd-Weron, J. Sznajd
+	\emph{Opinion evolution in closed community}. Int. J. Mod. Phys. C 11, 1157 (2000)
+	
+\bibitem{dm}
+G. Deffuant, D. Neau, F. Amblard, G. Weisbuch
+	\emph{Mixing beliefs among interacting agents}. Adv. Compl. Sys. 3(1-4), 87 (2000)
+	
+\bibitem{bc}
+R. Hegselmann, U. Krause
+	\emph{Opinion dynamics and bounded confidence: models, analysis and simulation}. JASSS 5(3) (2002)
+
+\bibitem{ws}
+D. Watts, S. Strogatz
+	\emph{Collective dynamics of ‘small-world’ networks}
+Nature vol. 393, 440–442 (1998)
+
+\bibitem{ba}
+A. L. Barabási, R. Albert
+	\emph{Emergence of scaling in random networks}
+Journal Science vol. 286, 5439, 509-512 (1999)
+
+
+
+\end{thebibliography}
 
 \end{document}
